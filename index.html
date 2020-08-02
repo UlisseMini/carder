@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Carder</title>
+
+	  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+
+		<style>
+			/* TODO: Refactor using css-grid or something equally sexy */
+			body {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+			}
+
+			:root {
+				--card-width: 350px;
+				--card-height: 200px;
+				--card-bg: #000;
+			}
+
+			.card {
+				width: var(--card-width);
+				height: var(--card-height);
+				background: var(--card-bg);
+				border-radius: 10px;
+				color: #fff;
+			}
+
+			.card-strip {
+				margin-top: calc(var(--card-height) / 10);
+				width: var(--card-width);
+				height: calc(var(--card-height) / 7);
+				background: #444;
+			}
+
+			.card-text {
+				font-size: 16px;
+				font-family: Roboto, sans-serif;
+			}
+
+			.card-number {
+				margin-top: 10px;
+				margin-left: 10px;
+			}
+
+			.card-exp {
+				margin-top: 5px;
+				margin-left: 10px;
+			}
+
+			.card-owner {
+				margin-top: 70px;
+				margin-left: 10px;
+			}
+		</style>
+	</head>
+	<body>
+		<p>Press 'g' to generate a new random credit card!</p>
+		<div class="card">
+			<div class="card-strip"></div>
+			<div class="card-text card-number">Loading...</div>
+			<div class="card-text card-exp">Loading...</div>
+			<div class="card-text card-owner">Bob Ross</div>
+		</div>
+
+		<script>
+			var card = document.querySelector('.card')
+
+			function rand(min, max) {
+				return Math.floor(Math.random() * (max - min) + min)
+			}
+
+			// random number n digits long
+			function r(n) {
+				var max = 10**n
+				var min = 10**(n-1)
+				return rand(min, max)
+			}
+
+			function randomCardNumber() {
+				var nums = new Array(4).fill(null).map(() => r(4))
+
+				return nums.join(' ')
+			}
+
+			function randomCardExp() {
+				var exp = [rand(0, 30), rand(20, 30)].join('/')
+				return "EXP " + exp + " CCV " + r(3)
+			}
+
+			function randomCard() {
+				var clone = card.cloneNode(true)
+				clone.querySelector('.card-number').innerText = randomCardNumber()
+				clone.querySelector('.card-exp').innerText = randomCardExp()
+				return clone
+			}
+
+			function replaceCardWithRandom() {
+				var tmp = randomCard()
+				card.replaceWith(tmp)
+				card = tmp
+			}
+
+			replaceCardWithRandom()
+			document.onkeyup = (e) => {
+				if (e && e.key === "g") {
+					replaceCardWithRandom()
+				}
+			}
+		</script>
+	</body>
+</html>
